@@ -1,11 +1,16 @@
 import express from "express";
 import cors from "cors";
+import booksRouter from "./routes/books";
+import reviewsRouter from "./routes/reviews";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/books", booksRouter);
+app.use("/books", reviewsRouter);
 
 // Health check endpoint
 app.get("/", (req, res) => {
