@@ -2,12 +2,24 @@ import express from "express";
 import cors from "cors";
 import booksRouter from "./routes/books";
 import reviewsRouter from "./routes/reviews";
+import {
+  specs,
+  swaggerDocument,
+  swaggerUi,
+  swaggerUiOptions,
+} from "./lib/swagger";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, swaggerUiOptions)
+);
 
 app.use("/books", booksRouter);
 app.use("/books", reviewsRouter);

@@ -11,16 +11,22 @@
     "@prisma/client": "^6.10.1",
     "@types/node": "^24.0.7",
     "@types/redis": "^4.0.10",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "prisma": "^6.10.1",
     "redis": "^5.5.6",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
-    "@types/express": "^4.17.23"
+    "@types/express": "^4.17.23",
+    "@types/yamljs": "^0.2.34"
   },
   "keywords": [],
   "author": "",

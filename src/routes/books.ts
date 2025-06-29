@@ -22,10 +22,40 @@ router.get("/", async (req: Request, res: Response) => {
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { title, author } = req.body;
+
+    // Validation checks
+    if (!title || !author) {
+      return res.status(400).json({
+        message: "Validation error",
+        error: "Both title and author are required fields",
+      });
+    }
+
+    if (typeof title !== "string" || typeof author !== "string") {
+      return res.status(400).json({
+        message: "Validation error",
+        error: "Title and author must be strings",
+      });
+    }
+
+    if (title.trim().length === 0 || author.trim().length === 0) {
+      return res.status(400).json({
+        message: "Validation error",
+        error: "Title and author cannot be empty or contain only whitespace",
+      });
+    }
+
+    if (title.trim().length > 255 || author.trim().length > 255) {
+      return res.status(400).json({
+        message: "Validation error",
+        error: "Title and author must be 255 characters or less",
+      });
+    }
+
     const newBook = await prisma.books.create({
       data: {
-        title,
-        author,
+        title: title.trim(),
+        author: author.trim(),
       },
     });
     res.status(201).json({

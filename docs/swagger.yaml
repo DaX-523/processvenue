@@ -1,0 +1,345 @@
+openapi: 3.0.0
+info:
+  title: Book Review API
+  description: A simple API for managing books and their reviews
+  version: 1.0.0
+  contact:
+    name: Book Review API Support
+    email: support@bookreview.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+paths:
+  /:
+    get:
+      summary: Health check
+      description: Returns API status and timestamp
+      tags:
+        - Health
+      responses:
+        "200":
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Book Review API is running!"
+                  documentation:
+                    type: string
+                    example: "/api-docs"
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /books:
+    get:
+      summary: List all books
+      description: Retrieve a list of all books.
+      tags:
+        - Books
+      responses:
+        "200":
+          description: List of books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Books fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Book"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Create a new book
+      description: Add a new book to the collection.
+      tags:
+        - Books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookRequest"
+      responses:
+        "201":
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Book created successfully"
+                  data:
+                    $ref: "#/components/schemas/Book"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /books/{id}/reviews:
+    get:
+      summary: Get reviews for a book
+      description: Retrieve all reviews for a specific book by book ID
+      tags:
+        - Reviews
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: Reviews retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Reviews fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Review"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Add a review for a book
+      description: Create a new review for a specific book
+      tags:
+        - Reviews
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReviewRequest"
+      responses:
+        "201":
+          description: Review created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Review created successfully"
+                  data:
+                    $ref: "#/components/schemas/Review"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  parameters:
+    BookId:
+      name: id
+      in: path
+      description: Book ID (UUID)
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "123e4567-e89b-12d3-a456-426614174000"
+
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique book identifier
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        title:
+          type: string
+          description: Book title
+          example: "The Great Gatsby"
+        author:
+          type: string
+          description: Book author
+          example: "F. Scott Fitzgerald"
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+          example: "2024-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2024-01-15T10:30:00.000Z"
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique review identifier
+          example: "456e7890-e89b-12d3-a456-426614174001"
+        bookId:
+          type: string
+          format: uuid
+          description: Associated book ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          description: Reviewer's name
+          example: "John Doe"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Rating from 1 to 5
+          example: 4
+        comment:
+          type: string
+          nullable: true
+          description: Review comment (optional)
+          example: "Great book! Really enjoyed reading it."
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+          example: "2024-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2024-01-15T10:30:00.000Z"
+
+    CreateBookRequest:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          description: Book title (required, max 255 characters)
+          example: "The Great Gatsby"
+        author:
+          type: string
+          maxLength: 255
+          description: Book author (required, max 255 characters)
+          example: "F. Scott Fitzgerald"
+
+    CreateReviewRequest:
+      type: object
+      required:
+        - name
+        - rating
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: Reviewer's name (required, max 100 characters)
+          example: "John Doe"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Rating from 1 to 5 (required)
+          example: 4
+        comment:
+          type: string
+          maxLength: 1000
+          description: Review comment (optional, max 1000 characters)
+          example: "Great book! Really enjoyed reading it."
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error type or category
+          example: "Validation error"
+        error:
+          type: string
+          description: Detailed error message
+          example: "Both title and author are required fields"
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            bookValidation:
+              summary: Book validation error
+              value:
+                message: "Validation error"
+                error: "Both title and author are required fields"
+            reviewValidation:
+              summary: Review validation error
+              value:
+                message: "Validation error"
+                error: "Name and rating are required fields"
+            ratingRange:
+              summary: Rating out of range
+              value:
+                message: "Validation error"
+                error: "Rating must be between 1 and 5"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            bookNotFound:
+              summary: Book not found
+              value:
+                message: "Book not found"
+                error: "The specified book does not exist"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            serverError:
+              summary: Internal server error
+              value:
+                message: "Internal server error"
+                error: "An unexpected error occurred"
+
+tags:
+  - name: Health
+    description: Health check and monitoring endpoints
+  - name: Books
+    description: Book management operations
+  - name: Reviews
+    description: Review management operations
