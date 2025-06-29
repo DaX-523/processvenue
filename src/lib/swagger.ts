@@ -8,7 +8,6 @@ const swaggerDocument = YAML.load(
   path.join(__dirname, "../../docs/swagger.yaml")
 );
 
-// Swagger JSDoc options (for future JSDoc integration if needed)
 const options = {
   definition: {
     openapi: "3.0.0",

@@ -56,4 +56,5 @@ app.use((err: any, req: any, res: any, next: any) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📚 Book Review API ready!`);
+  console.log(`🔗 Swagger UI: http://localhost:${PORT}/api-docs`);
 });
