@@ -5,9 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "dev": "ts-node src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "db:migrate": "npx prisma migrate dev",
+    "db:generate": "npx prisma generate",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
