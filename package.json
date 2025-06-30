@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
@@ -25,11 +27,31 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.23",
+    "@types/jest": "^30.0.0",
     "@types/redis": "^4.0.10",
-    "@types/yamljs": "^0.2.34"
+    "@types/supertest": "^6.0.3",
+    "@types/yamljs": "^0.2.34",
+    "jest": "^30.0.3",
+    "supertest": "^7.1.1",
+    "ts-jest": "^29.4.0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__tests__/config.ts"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/__tests__/**"
+    ]
+  }
 }
